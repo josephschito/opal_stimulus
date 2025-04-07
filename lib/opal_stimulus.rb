@@ -3,6 +3,4 @@
 require_relative "opal_stimulus/version"
 
 module OpalStimulus
-  class Error < StandardError; end
-  # Your code goes here...
 end
