@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) do |ls|
     ls.readlines("\x0", chomp: true).reject do |f|
       (f == gemspec) ||
-        f.start_with?(*%w[bin/ test/ spec/ features/ .git .github appveyor Gemfile])
+      f.start_with?(*%w[bin/ test/ spec/ features/ .git .github appveyor Gemfile install/])
     end
   end
   spec.bindir = "exe"
@@ -34,7 +34,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
-  # spec.add_dependency "example-gem", "~> 1.0"
+  spec.add_dependency "opal", "~> 1.8.2"
+  spec.add_dependency "listen", "~> 3.9.0"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
