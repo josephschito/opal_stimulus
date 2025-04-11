@@ -51,6 +51,6 @@ window.Controller = Controller;
   FileUtils.chmod("+x", "#{APPLICATION_OPAL_STIMULUS_BIN_PATH}/dev")
   copy_file "#{__dir__}/application.rb", "#{APPLICATION_OPAL_STIMULUS_PATH}/application.rb"
   copy_file "#{__dir__}/stimulus_controller.rb", "#{APPLICATION_OPAL_STIMULUS_PATH}/stimulus_controller.rb"
-  copy_file "#{__dir__}/controllers_requires.rb", "#{APPLICATION_OPAL_STIMULUS_PATH}/controller_requires.rb"
+  copy_file "#{__dir__}/controllers_requires.rb", "#{APPLICATION_OPAL_STIMULUS_PATH}/controllers_requires.rb"
   copy_file "#{__dir__}/controllers/my_opal_controller.rb", "#{APPLICATION_OPAL_STIMULUS_PATH}/controllers/my_opal_controller.rb"
 end
