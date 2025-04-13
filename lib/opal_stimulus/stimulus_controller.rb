@@ -129,6 +129,66 @@ class StimulusController < `Controller`
     end
   end
 
+  # Define values with their types (String, Number, Boolean, Array, Object)
+  # Usage: self.values = { name: String, count: Number, active: Boolean, items: Array, config: Object }
+  def self.values=(values_hash = {})
+    js_values = {}
+
+    values_hash.each do |name, type|
+      js_type = case type
+                when String  then 'String'
+                when Integer, Float, Numeric then 'Number'
+                when TrueClass, FalseClass, Boolean then 'Boolean'
+                when Array  then 'Array'
+                when Hash, Object then 'Object'
+                else 'String' # Default to String for unknown types
+                end
+
+      js_values[name] = js_type
+
+      # Define value getter method (snake_case)
+      define_method(name.to_s) do
+        # Convert JavaScript value to appropriate Ruby type
+        js_value = `this[#{name + 'Value'}]`
+        case type
+        when String
+          js_value.to_s
+        when Integer
+          js_value.to_i
+        when Float
+          js_value.to_f
+        when TrueClass, FalseClass, Boolean
+          !!js_value
+        when Array
+          Native::Array.new(js_value)
+        when Hash, Object
+          Native::Object.new(js_value)
+        else
+          js_value
+        end
+      end
+
+      # Define has_value? method
+      define_method("has_#{name}") do
+        `return this[#{'has' + name.to_s.capitalize + 'Value'}]`
+      end
+
+      # Define value changed callback bridge
+      snake_case_changed = "#{name}_value_changed"
+      camel_case_changed = "#{name}ValueChanged"
+      %x{
+        #{self.stimulus_controller}.prototype[#{camel_case_changed}] = function(value, previousValue) {
+          if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_changed})) {
+            return this['$' + #{snake_case_changed}](value, previousValue);
+          }
+        }
+      }
+    end
+
+    # Set values on the controller
+    `#{self.stimulus_controller}.values = #{js_values.to_n}`
+  end
+
   def element
     `this.element`
   end
