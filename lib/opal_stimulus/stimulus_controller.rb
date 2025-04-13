@@ -189,6 +189,71 @@ class StimulusController < `Controller`
     `#{self.stimulus_controller}.values = #{js_values.to_n}`
   end
 
+  # Define CSS classes that can be controlled by the controller
+  # Usage: self.classes = ["loading", "active", "error"]
+  def self.classes=(class_names = [])
+    `#{self.stimulus_controller}.classes = #{class_names.to_n}`
+
+    class_names.each do |class_name|
+      # Define methods to add a CSS class
+      define_method("add_#{class_name}_class") do
+        `this.#{class_name}Classes.add()`
+      end
+
+      # Define methods to remove a CSS class
+      define_method("remove_#{class_name}_class") do
+        `this.#{class_name}Classes.remove()`
+      end
+
+      # Define methods to check if the element has a CSS class
+      define_method("has_#{class_name}_class?") do
+        `return this.#{class_name}Classes.has()`
+      end
+
+      # Define methods to toggle a CSS class
+      define_method("toggle_#{class_name}_class") do
+        `this.#{class_name}Classes.toggle()`
+      end
+    end
+  end
+
+  # Generic methods to manipulate any class
+  def add_class(class_name, element = nil)
+    if element
+      `this.addClass(#{class_name}, #{element})`
+    else
+      `this.addClass(#{class_name})`
+    end
+  end
+
+  def remove_class(class_name, element = nil)
+    if element
+      `this.removeClass(#{class_name}, #{element})`
+    else
+      `this.removeClass(#{class_name})`
+    end
+  end
+
+  def has_class?(class_name, element = nil)
+    if element
+      `return this.hasClass(#{class_name}, #{element})`
+    else
+      `return this.hasClass(#{class_name})`
+    end
+  end
+
+  def toggle_class(class_name, force = nil, element = nil)
+    if element && force != nil
+      `this.toggleClass(#{class_name}, #{force}, #{element})`
+    elsif element
+      `this.toggleClass(#{class_name}, #{element})`
+    elsif force != nil
+      `this.toggleClass(#{class_name}, #{force})`
+    else
+      `this.toggleClass(#{class_name})`
+    end
+  end
+
   def element
     `this.element`
   end
