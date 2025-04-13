@@ -11,8 +11,6 @@ class StimulusController < `Controller`
 
   def self.inherited(subclass)
     ::Opal.bridge(subclass.stimulus_controller, subclass)
-    subclass.define_method(:connect) {}
-    subclass.define_method(:dummy) {}
   end
 
   def self.stimulus_controller
@@ -28,11 +26,10 @@ class StimulusController < `Controller`
   def self.method_added(name)
     return if DEFAULT_GETTERS.include?(name)
 
-    self.bridge_method(name)
-
-
     # Register Stimulus controller after connect method is added
-    self.define_method(:dummy) {} if name == :connect && self.stimulus_controller != `Controller`
+    define_method(:dummy) {} if name == :connect && self.stimulus_controller != `Controller`
+
+    self.bridge_method(name)
     unless DEFAULT_METHODS.include?(name)
       return if `Stimulus.controllers`.include?(`#{self.stimulus_name}`)
       `Stimulus.register(#{self.stimulus_name}, #{self.stimulus_controller})`
