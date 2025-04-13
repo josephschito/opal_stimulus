@@ -58,6 +58,14 @@ class StimulusController < `Controller`
         `return this[#{target + 'Target'}]`
       end
 
+      define_method(target + "_targets") do
+        `return this[#{target + 'Targets'}]`
+      end
+
+      define_method("has_" + target + "_target") do
+        `return this[#{'has' + target.capitalize + 'Target'}]`
+      end
+
       snake_case_connected = target + "_target_connected"
       camel_case_connected = target + "TargetConnected"
       %x{
