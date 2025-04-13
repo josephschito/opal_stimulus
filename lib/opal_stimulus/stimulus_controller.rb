@@ -29,6 +29,8 @@ class StimulusController < `Controller`
     # Register Stimulus controller after connect method is added
     define_method(:dummy) {} if name == :connect && self.stimulus_controller != `Controller`
 
+    return if name.to_s.end_with?("_target_connected") || name.to_s.end_with?("_target_disconnected")
+
     self.bridge_method(name)
     unless DEFAULT_METHODS.include?(name)
       return if `Stimulus.controllers`.include?(`#{self.stimulus_name}`)
@@ -55,6 +57,27 @@ class StimulusController < `Controller`
       define_method(target + "_target") do
         `return this[#{target + 'Target'}]`
       end
+
+      snake_case_connected = target + "_target_connected"
+      camel_case_connected = target + "TargetConnected"
+      %x{
+        #{self.stimulus_controller}.prototype[#{camel_case_connected}] = function() {
+          if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_connected})) {
+            return this['$' + #{snake_case_connected}]();
+          }
+        }
+      }
+
+      # Define target disconnected callback bridge
+      snake_case_disconnected = target + "_target_disconnected"
+      camel_case_disconnected = target + "TargetDisconnected"
+      %x{
+        #{self.stimulus_controller}.prototype[#{camel_case_disconnected}] = function() {
+          if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_disconnected})) {
+            return this['$' + #{snake_case_disconnected}]();
+          }
+        }
+      }
     end
   end
 
