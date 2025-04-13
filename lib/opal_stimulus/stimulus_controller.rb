@@ -96,6 +96,36 @@ class StimulusController < `Controller`
       define_method(outlet + "_outlet") do
         `return this[#{outlet + 'Outlet'}]`
       end
+
+      define_method(outlet + "_outlets") do
+        `return this[#{outlet + 'Outlets'}]`
+      end
+
+      define_method("has_" + outlet + "_outlet") do
+        `return this[#{'has' + outlet.capitalize + 'Outlet'}]`
+      end
+
+      # Define outlet connected callback bridge
+      snake_case_connected = outlet + "_outlet_connected"
+      camel_case_connected = outlet + "OutletConnected"
+      %x{
+        #{self.stimulus_controller}.prototype[#{camel_case_connected}] = function() {
+          if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_connected})) {
+            return this['$' + #{snake_case_connected}]();
+          }
+        }
+      }
+
+      # Define outlet disconnected callback bridge
+      snake_case_disconnected = outlet + "_outlet_disconnected"
+      camel_case_disconnected = outlet + "OutletDisconnected"
+      %x{
+        #{self.stimulus_controller}.prototype[#{camel_case_disconnected}] = function() {
+          if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_disconnected})) {
+            return this['$' + #{snake_case_disconnected}]();
+          }
+        }
+      }
     end
   end
 
