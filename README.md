@@ -1,38 +1,153 @@
-# OpalStimulus
+# OpalStimulus: Write Stimulus.js in Ruby
 
-TODO: Delete this and the text below, and describe your gem
+**OpalStimulus** allows you to write your [Stimulus](https://stimulus.hotwired.dev/) controllers in pure Ruby. No more context switching between Ruby and JavaScript in your Rails apps - do everything in Ruby while maintaining all Stimulus functionality.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/opal_stimulus`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Why OpalStimulus?
+
+- Write Stimulus controllers in Ruby instead of JavaScript
+- Use Ruby naming conventions (snake_case instead of camelCase)
+- Automatic type conversion between Ruby and JavaScript
+- Elegant syntax for defining targets, classes, values, and actions
+- Maintain a consistent development experience in a single language
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add this line to your Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+gem 'opal_stimulus'
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+Then execute:
 
 ```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+bundle install
+rails generate opal_stimulus:install
 ```
 
-## Usage
+This command installs everything you need, including Opal configuration files, Stimulus importmaps, and an example controller.
 
-TODO: Write usage instructions here
+## Basic Example
+
+Here's a Hello World example with OpalStimulus. Compare with the [original JavaScript example](https://stimulus.hotwired.dev/handbook/hello-stimulus):
+
+**Ruby Controller:**
+
+```ruby
+# app/opal/controllers/hello_controller.rb
+class HelloController < StimulusController
+  self.targets = ["name"]
+
+  def greet
+    if has_name_target
+      element.text_content = "Hello, #{name_target.value}!"
+    else
+      element.text_content = "Hello, World!"
+    end
+  end
+end
+```
+
+**HTML:**
+
+```html
+<div data-controller="hello">
+  <input data-hello-target="name" type="text">
+  <button data-action="click->hello#greet">Greet</button>
+  <span></span>
+</div>
+```
+
+## Advanced Features
+
+### Targets
+
+```ruby
+class MyController < StimulusController
+  self.targets = ["counter", "button"]
+
+  def connect
+    if has_counter_target
+      counter_target.text_content = "0"
+    end
+  end
+
+  def counter_target_connected
+    puts "Counter target connected!"
+  end
+end
+```
+
+### Values
+
+```ruby
+class PreferenceController < StimulusController
+  self.values = {
+    theme: String,
+    count: Integer,
+    notifications: Boolean,
+    contacts: Array,
+    settings: Hash
+  }
+
+  def toggle_theme
+    current = theme
+    new_theme = current == "dark" ? "light" : "dark"
+    `this.themeValue = #{new_theme}`
+  end
+
+  def theme_value_changed(new_value, old_value)
+    puts "Theme changed from #{old_value} to #{new_value}"
+  end
+end
+```
+
+### CSS Classes
+
+```ruby
+class UiController < StimulusController
+  self.classes = ["loading", "active", "error"]
+
+  def start_loading
+    add_loading_class
+    has_loading_class?
+
+    add_class("shake", my_element)
+  end
+end
+```
+
+### Actions
+
+```ruby
+class FormController < StimulusController
+  def handle_submit
+    puts "Form submitted! Event type: #{event.type}"
+
+    if has_param?("redirect")
+      redirect_url = get_param("redirect")
+    end
+
+    dispatch_event("form:submitted", { success: true })
+  end
+end
+```
+
+## How It Works
+
+OpalStimulus uses [Opal](https://opalrb.com) to compile your Ruby code into JavaScript, creating bridges between the two worlds. Everything is managed for you, eliminating the need to write JavaScript code.
+
+Behind the scenes, OpalStimulus creates bridges between Ruby snake_case methods and JavaScript camelCase methods, allowing you to follow Ruby conventions while producing Stimulus-compatible JavaScript code.
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+For experimenting, use `bin/console` for an interactive prompt.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/opal_stimulus.
+Bug reports and pull requests are welcome on GitHub at https://github.com/josephschito/opal_stimulus.
 
 ## License
 
