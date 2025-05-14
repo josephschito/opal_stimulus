@@ -20,18 +20,22 @@ class StimulusController < `Controller`
   end
 
   def self.stimulus_name
-    self.name.gsub(/Controller$/, '').gsub(/([a-z])([A-Z])/, '\1-\2').downcase
+    self.name.gsub(/Controller$/, "").gsub(/([a-z])([A-Z])/, '\1-\2').downcase
   end
 
   def self.method_added(name)
     return if DEFAULT_GETTERS.include?(name)
 
-    # Register Stimulus controller after connect method is added
-    define_method(:dummy) {} if name == :connect && self.stimulus_controller != `Controller`
-
-    return if name.to_s.end_with?("_target_connected") || name.to_s.end_with?("_target_disconnected")
-
     self.bridge_method(name)
+
+    if name == :connect && self.stimulus_controller != `Controller`
+      define_method(:after_connect) { }
+    end
+
+    if name == :initialize && self.stimulus_controller != `Controller`
+      define_method(:after_initialize) { }
+    end
+
     unless DEFAULT_METHODS.include?(name)
       return if `Stimulus.controllers`.include?(`#{self.stimulus_name}`)
       `Stimulus.register(#{self.stimulus_name}, #{self.stimulus_controller})`
@@ -55,15 +59,15 @@ class StimulusController < `Controller`
 
     targets.each do |target|
       define_method(target + "_target") do
-        `return this[#{target + 'Target'}]`
+        `return this[#{target + "Target"}]`
       end
 
       define_method(target + "_targets") do
-        `return this[#{target + 'Targets'}]`
+        `return this[#{target + "Targets"}]`
       end
 
       define_method("has_" + target + "_target") do
-        `return this[#{'has' + target.capitalize + 'Target'}]`
+        `return this[#{"has" + target.capitalize + "Target"}]`
       end
 
       snake_case_connected = target + "_target_connected"
@@ -94,15 +98,15 @@ class StimulusController < `Controller`
 
     outlets.each do |outlet|
       define_method(outlet + "_outlet") do
-        `return this[#{outlet + 'Outlet'}]`
+        `return this[#{outlet + "Outlet"}]`
       end
 
       define_method(outlet + "_outlets") do
-        `return this[#{outlet + 'Outlets'}]`
+        `return this[#{outlet + "Outlets"}]`
       end
 
       define_method("has_" + outlet + "_outlet") do
-        `return this[#{'has' + outlet.capitalize + 'Outlet'}]`
+        `return this[#{"has" + outlet.capitalize + "Outlet"}]`
       end
 
       # Define outlet connected callback bridge
@@ -136,20 +140,20 @@ class StimulusController < `Controller`
 
     values_hash.each do |name, type|
       js_type = case type
-                when String  then 'String'
-                when Integer, Float, Numeric then 'Number'
-                when TrueClass, FalseClass, Boolean then 'Boolean'
-                when Array  then 'Array'
-                when Hash, Object then 'Object'
-                else 'String' # Default to String for unknown types
-                end
+      when String  then "String"
+      when Integer, Float, Numeric then "Number"
+      when TrueClass, FalseClass, Boolean then "Boolean"
+      when Array  then "Array"
+      when Hash, Object then "Object"
+      else "String" # Default to String for unknown types
+      end
 
       js_values[name] = js_type
 
       # Define value getter method (snake_case)
       define_method(name.to_s) do
         # Convert JavaScript value to appropriate Ruby type
-        js_value = `this[#{name + 'Value'}]`
+        js_value = `this[#{name + "Value"}]`
         case type
         when String
           js_value.to_s
@@ -170,7 +174,7 @@ class StimulusController < `Controller`
 
       # Define has_value? method
       define_method("has_#{name}") do
-        `return this[#{'has' + name.to_s.capitalize + 'Value'}]`
+        `return this[#{"has" + name.to_s.capitalize + "Value"}]`
       end
 
       # Define value changed callback bridge
