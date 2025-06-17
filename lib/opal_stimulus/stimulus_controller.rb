@@ -80,7 +80,6 @@ class StimulusController < `Controller`
         }
       }
 
-      # Define target disconnected callback bridge
       snake_case_disconnected = target + "_target_disconnected"
       camel_case_disconnected = target + "TargetDisconnected"
       %x{
@@ -109,7 +108,6 @@ class StimulusController < `Controller`
         `return this[#{"has" + outlet.capitalize + "Outlet"}]`
       end
 
-      # Define outlet connected callback bridge
       snake_case_connected = outlet + "_outlet_connected"
       camel_case_connected = outlet + "OutletConnected"
       %x{
@@ -120,7 +118,6 @@ class StimulusController < `Controller`
         }
       }
 
-      # Define outlet disconnected callback bridge
       snake_case_disconnected = outlet + "_outlet_disconnected"
       camel_case_disconnected = outlet + "OutletDisconnected"
       %x{
@@ -133,8 +130,6 @@ class StimulusController < `Controller`
     end
   end
 
-  # Define values with their types (String, Number, Boolean, Array, Object)
-  # Usage: self.values = { name: String, count: Number, active: Boolean, items: Array, config: Object }
   def self.values=(values_hash = {})
     js_values = {}
 
@@ -172,12 +167,10 @@ class StimulusController < `Controller`
         end
       end
 
-      # Define has_value? method
       define_method("has_#{name}") do
         `return this[#{"has" + name.to_s.capitalize + "Value"}]`
       end
 
-      # Define value changed callback bridge
       snake_case_changed = "#{name}_value_changed"
       camel_case_changed = "#{name}ValueChanged"
       %x{
@@ -189,39 +182,31 @@ class StimulusController < `Controller`
       }
     end
 
-    # Set values on the controller
     `#{self.stimulus_controller}.values = #{js_values.to_n}`
   end
 
-  # Define CSS classes that can be controlled by the controller
-  # Usage: self.classes = ["loading", "active", "error"]
   def self.classes=(class_names = [])
     `#{self.stimulus_controller}.classes = #{class_names.to_n}`
 
     class_names.each do |class_name|
-      # Define methods to add a CSS class
       define_method("add_#{class_name}_class") do
         `this.#{class_name}Classes.add()`
       end
 
-      # Define methods to remove a CSS class
       define_method("remove_#{class_name}_class") do
         `this.#{class_name}Classes.remove()`
       end
 
-      # Define methods to check if the element has a CSS class
       define_method("has_#{class_name}_class?") do
         `return this.#{class_name}Classes.has()`
       end
 
-      # Define methods to toggle a CSS class
       define_method("toggle_#{class_name}_class") do
         `this.#{class_name}Classes.toggle()`
       end
     end
   end
 
-  # Generic methods to manipulate any class
   def add_class(class_name, element = nil)
     if element
       `this.addClass(#{class_name}, #{element})`
