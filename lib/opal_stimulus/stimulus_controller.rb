@@ -27,19 +27,6 @@ class StimulusController < `Controller`
     return if DEFAULT_GETTERS.include?(name)
 
     self.bridge_method(name)
-
-    if name == :connect && self.stimulus_controller != `Controller`
-      define_method(:after_connect) { }
-    end
-
-    if name == :initialize && self.stimulus_controller != `Controller`
-      define_method(:after_initialize) { }
-    end
-
-    unless DEFAULT_METHODS.include?(name)
-      return if `Stimulus.controllers`.include?(`#{self.stimulus_name}`)
-      `Stimulus.register(#{self.stimulus_name}, #{self.stimulus_controller})`
-    end
   end
 
   def self.register(controller)
