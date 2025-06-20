@@ -26,14 +26,6 @@ class StimulusController < `Controller`
   def self.method_added(name)
     return if DEFAULT_GETTERS.include?(name)
 
-    self.bridge_method(name)
-  end
-
-  def self.register(controller)
-    `Stimulus.register(#{self.stimulus_name}, #{controller})`
-  end
-
-  def self.bridge_method(name)
     %x{
       #{self.stimulus_controller}.prototype[name] = function (...args) {
         return #{self.stimulus_controller}.prototype['$' + name].apply(this, args);
