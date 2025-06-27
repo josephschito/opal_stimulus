@@ -2,6 +2,8 @@
 
 require "opal"
 require "native"
+require "promise"
+require "browser/setup/full"
 
 class StimulusController < `Controller`
   include Native::Wrapper
@@ -38,11 +40,13 @@ class StimulusController < `Controller`
 
     targets.each do |target|
       define_method(target + "_target") do
-        `return this[#{target + "Target"}]`
+        Browser::DOM::Element.new(`this[#{target + "Target"}]`)
       end
 
       define_method(target + "_targets") do
-        `return this[#{target + "Targets"}]`
+        `this[#{target + "Targets"}]`.map do |el|
+          Browser::DOM::Element.new(el)
+        end
       end
 
       define_method("has_" + target + "_target") do
@@ -76,11 +80,13 @@ class StimulusController < `Controller`
 
     outlets.each do |outlet|
       define_method(outlet + "_outlet") do
-        `return this[#{outlet + "Outlet"}]`
+        Browser::DOM::Element.new(`this[#{outlet + "Outlet"}]`)
       end
 
       define_method(outlet + "_outlets") do
-        `return this[#{outlet + "Outlets"}]`
+        `this[#{outlet + "Outlets"}]`.map do |outlet|
+          Browser::DOM::Element.new(outlet)
+        end
       end
 
       define_method("has_" + outlet + "_outlet") do
