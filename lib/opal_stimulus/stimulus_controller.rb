@@ -22,7 +22,7 @@ class StimulusController < `Controller`
   end
 
   def self.stimulus_name
-    self.name.gsub(/Controller$/, "").gsub(/([a-z])([A-Z])/, '\1-\2').downcase
+    self.name.gsub(/Controller$/, "").gsub(/([a-z])([A-Z])/, '\1-\2').gsub("::", "--").downcase
   end
 
   def self.method_added(name)
