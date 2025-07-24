@@ -14,7 +14,7 @@ Execute:
 
 ```bash
 bundle install
-rails generate opal_stimulus:install
+rails opal_stimulus:install
 ```
 
 Start application:
