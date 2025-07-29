@@ -40,6 +40,7 @@ window.Controller = Controller;
   end
   append_to_file ".gitignore", "/.opal-cache\n"
   append_to_file ".gitignore", "app/assets/builds/opal.js\n"
+  append_to_file ".gitignore", "app/assets/builds/opal.js.map\n"
   empty_directory APPLICATION_OPAL_STIMULUS_BIN_PATH
   empty_directory APPLICATION_OPAL_STIMULUS_PATH
   empty_directory "#{APPLICATION_OPAL_STIMULUS_PATH}/controllers"
