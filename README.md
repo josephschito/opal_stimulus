@@ -37,7 +37,7 @@ class HelloController < StimulusController
   self.targets = ["name", "output"]
 
   def greet
-    output_target.content = "Hello, #{name_target.value}!"
+    output_target.text_content = "Hello, #{name_target.value}!"
   end
 end
 ```
