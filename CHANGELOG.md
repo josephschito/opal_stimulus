@@ -11,3 +11,8 @@
 ## [0.1.2] - 2025-07-29
 
 - Implement Opal Source maps https://opalrb.com/docs/guides/v1.4.1/source_maps.html
+
+## [0.1.3] - 2025-07-29
+
+- Add missing ignore for app/assets/builds/opal.js.map
+- Replace opal-browser with opal_proxy, check it out here.
