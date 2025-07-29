@@ -15,9 +15,18 @@ Opal.append_path("app/opal")
 build = -> {
   puts "🔨 Compiling Opal..."
 
-  builder = Opal::Builder.build("application", requirable: false)
+  builder = Opal::Builder.new
+
+  result = builder.build("application")
+
   output_path = "app/assets/builds/opal.js"
-  File.write(output_path, builder.to_s)
+  sourcemap_path = "#{output_path}.map"
+
+  js_code = result.to_s
+  source_map_json = result.source_map.to_json
+
+  File.write(output_path, js_code + "\n//# sourceMappingURL=/assets/opal.js.map")
+  File.write(sourcemap_path, source_map_json)
 
   puts "✅ Compiled to #{output_path}"
 }
