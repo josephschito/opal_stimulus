@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "opal", "~> 1.8.2"
   spec.add_dependency "listen", "~> 3.9.0"
-  spec.add_dependency "opal-browser", "~> 0.3.5"
+  spec.add_dependency "opal_proxy", "~> 0.1.0"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

@@ -4,11 +4,12 @@
 require "bundler/setup"
 require "listen"
 require "opal"
-require "opal-browser"
 
-GEM_NAME = "opal_stimulus"
+GEMS = ["opal_proxy", "opal_stimulus"]
 
-Opal.use_gem(GEM_NAME) rescue Opal.append_path(File.expand_path("lib", Bundler.rubygems.find_name(GEM_NAME).first.full_gem_path))
+GEMS.each do |gem_name|
+  Opal.use_gem(gem_name) rescue Opal.append_path(File.expand_path("lib", Bundler.rubygems.find_name(gem_name).first.full_gem_path))
+end
 
 Opal.append_path("app/opal")
 

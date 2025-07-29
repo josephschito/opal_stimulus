@@ -2,8 +2,7 @@
 
 require "opal"
 require "native"
-require "promise"
-require "browser/setup/full"
+require "js/proxy"
 
 class StimulusController < `Controller`
   include Native::Wrapper
@@ -44,12 +43,12 @@ class StimulusController < `Controller`
 
     targets.each do |target|
       define_method(target + "_target") do
-        Browser::DOM::Element.new(`this[#{target + "Target"}]`)
+        JS::Proxy.new(`this[#{target + "Target"}]`)
       end
 
       define_method(target + "_targets") do
         `this[#{target + "Targets"}]`.map do |el|
-          Browser::DOM::Element.new(el)
+          JS::Proxy.new(el)
         end
       end
 
@@ -84,12 +83,12 @@ class StimulusController < `Controller`
 
     outlets.each do |outlet|
       define_method(outlet + "_outlet") do
-        Browser::DOM::Element.new(`this[#{outlet + "Outlet"}]`)
+        JS::Proxy.new(`this[#{outlet + "Outlet"}]`)
       end
 
       define_method(outlet + "_outlets") do
         `this[#{outlet + "Outlets"}]`.map do |outlet|
-          Browser::DOM::Element.new(outlet)
+          JS::Proxy.new(outlet)
         end
       end
 
