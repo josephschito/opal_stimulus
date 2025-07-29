@@ -30,7 +30,11 @@ class StimulusController < `Controller`
 
     %x{
       #{self.stimulus_controller}.prototype[name] = function (...args) {
-        return #{self.stimulus_controller}.prototype['$' + name].apply(this, args);
+        try {
+          return this['$' + name].apply(this, args);
+        } catch (e) {
+          console.error("Uncaught", e);
+        }
       }
     }
   end
