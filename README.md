@@ -25,7 +25,7 @@ bin/dev
 
 ## Basic Example
 
-Here's a Hello World example with OpalStimulus. Compare with the [original JavaScript example](https://stimulus.hotwired.dev/handbook/hello-stimulus):
+Here's a Hello World example with OpalStimulus. Compare with the [original JavaScript example](https://stimulus.hotwired.dev/#:~:text=%2F%2F%20hello_controller.js%0Aimport%20%7B%20Controller%20%7D%20from%20%22stimulus%22%0A%0Aexport%20default%20class%20extends%20Controller%20%7B%0A%20%20static%20targets%20%3D%20%5B%20%22name%22%2C%20%22output%22%20%5D%0A%0A%20%20greet()%20%7B%0A%20%20%20%20this.outputTarget.textContent%20%3D%0A%20%20%20%20%20%20%60Hello%2C%20%24%7Bthis.nameTarget.value%7D!%60%0A%20%20%7D%0A%7D):
 
 **Ruby Controller:**
 
