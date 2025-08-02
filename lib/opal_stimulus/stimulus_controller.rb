@@ -30,7 +30,13 @@ class StimulusController < `Controller`
     %x{
       #{self.stimulus_controller}.prototype[name] = function (...args) {
         try {
-          return this['$' + name].apply(this, args);
+          var wrappedArgs = args.map(function(arg) {
+            if (arg && typeof arg === "object" && !arg.$$class) {
+              return Opal.JS.Proxy.$new(arg);
+            }
+            return arg;
+          });
+          return this['$' + name].apply(this, wrappedArgs);
         } catch (e) {
           console.error("Uncaught", e);
         }
