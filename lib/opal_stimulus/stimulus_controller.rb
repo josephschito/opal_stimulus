@@ -48,22 +48,25 @@ class StimulusController < `Controller`
     `#{self.stimulus_controller}.targets = targets`
 
     targets.each do |target|
-      define_method(target + "_target") do
-        JS::Proxy.new(`this[#{target + "Target"}]`)
+      js_name = target.to_s
+      ruby_name = self.to_ruby_name(target)
+
+      define_method(ruby_name + "_target") do
+        JS::Proxy.new(`this[#{js_name + "Target"}]`)
       end
 
-      define_method(target + "_targets") do
-        `this[#{target + "Targets"}]`.map do |el|
+      define_method(ruby_name + "_targets") do
+        `this[#{js_name + "Targets"}]`.map do |el|
           JS::Proxy.new(el)
         end
       end
 
-      define_method("has_" + target + "_target") do
-        `return this[#{"has" + target.capitalize + "Target"}]`
+      define_method("has_" + ruby_name + "_target") do
+        `this[#{"has" + js_name.capitalize + "Target"}]`
       end
 
-      snake_case_connected = target + "_target_connected"
-      camel_case_connected = target + "TargetConnected"
+      snake_case_connected = ruby_name + "_target_connected"
+      camel_case_connected = js_name + "TargetConnected"
       %x{
         #{self.stimulus_controller}.prototype[#{camel_case_connected}] = function() {
           if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_connected})) {
@@ -72,8 +75,8 @@ class StimulusController < `Controller`
         }
       }
 
-      snake_case_disconnected = target + "_target_disconnected"
-      camel_case_disconnected = target + "TargetDisconnected"
+      snake_case_disconnected = ruby_name + "_target_disconnected"
+      camel_case_disconnected = js_name + "TargetDisconnected"
       %x{
         #{self.stimulus_controller}.prototype[#{camel_case_disconnected}] = function() {
           if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_disconnected})) {
@@ -223,6 +226,11 @@ class StimulusController < `Controller`
     else
       `return this.hasClass(#{class_name})`
     end
+  def self.to_ruby_name(name)
+    name
+      .to_s
+      .gsub(/([A-Z]+)/) { "_#{$1.downcase}" }
+      .sub(/^_/, '')
   end
 
   def toggle_class(class_name, force = nil, element = nil)
