@@ -201,6 +201,8 @@ class StimulusController < `Controller`
     else
       `this.addClass(#{class_name})`
     end
+  def element
+    JS::Proxy.new(`this.element`)
   end
 
   def remove_class(class_name, element = nil)
@@ -236,7 +238,5 @@ class StimulusController < `Controller`
     end
   end
 
-  def element
-    `this.element`
   end
 end
