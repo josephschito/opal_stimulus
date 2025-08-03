@@ -132,37 +132,29 @@ class StimulusController < `Controller`
     js_values = {}
 
     values_hash.each do |name, type|
+      name = self.to_ruby_name(name)
+
       js_type = case type
-      when String  then "String"
-      when Integer, Float, Numeric then "Number"
-      when TrueClass, FalseClass, Boolean then "Boolean"
-      when Array  then "Array"
-      when Hash, Object then "Object"
-      else "String" # Default to String for unknown types
+      when :string then `String`
+      when :number then `Number`
+      when :boolean then `Boolean`
+      when :array then `Array`
+      when :object then `Object`
+      else
+        raise ArgumentError,
+          "Unsupported value type: #{type}, please use :string, :number, :boolean, :array, or :object"
       end
 
       js_values[name] = js_type
 
-      # Define value getter method (snake_case)
-      define_method(name.to_s) do
-        # Convert JavaScript value to appropriate Ruby type
-        js_value = `this[#{name + "Value"}]`
-        case type
-        when String
-          js_value.to_s
-        when Integer
-          js_value.to_i
-        when Float
-          js_value.to_f
-        when TrueClass, FalseClass, Boolean
-          !!js_value
-        when Array
-          Native::Array.new(js_value)
-        when Hash, Object
-          Native::Object.new(js_value)
-        else
-          js_value
-        end
+      `#{self.stimulus_controller}.values = #{js_values.to_n}`
+
+      define_method(name + "_value") do
+        `return this[#{name + "Value"}]`
+      end
+
+      define_method(name + "_value=") do |value|
+        `this[#{name + "Value"}]= #{value.to_n}`
       end
 
       define_method("has_#{name}") do
@@ -179,8 +171,6 @@ class StimulusController < `Controller`
         }
       }
     end
-
-    `#{self.stimulus_controller}.values = #{js_values.to_n}`
   end
 
   def self.classes=(class_names = [])
