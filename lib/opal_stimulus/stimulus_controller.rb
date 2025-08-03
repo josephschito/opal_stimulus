@@ -91,22 +91,23 @@ class StimulusController < `Controller`
     `#{self.stimulus_controller}.outlets = outlets`
 
     outlets.each do |outlet|
-      define_method(outlet + "_outlet") do
-        JS::Proxy.new(`this[#{outlet + "Outlet"}]`)
+      js_name = outlet.to_s
+      ruby_name = self.to_ruby_name(outlet)
+
+      define_method(ruby_name + "_outlet") do
+        `return this[#{js_name + "Outlet"}]`
       end
 
-      define_method(outlet + "_outlets") do
-        `this[#{outlet + "Outlets"}]`.map do |outlet|
-          JS::Proxy.new(outlet)
-        end
+      define_method(ruby_name + "_outlets") do
+        `this[#{js_name + "Outlets"}]`
       end
 
-      define_method("has_" + outlet + "_outlet") do
-        `return this[#{"has" + outlet.capitalize + "Outlet"}]`
+      define_method("has_" + ruby_name + "_outlet") do
+        `return this[#{"has" + js_name.capitalize + "Outlet"}]`
       end
 
-      snake_case_connected = outlet + "_outlet_connected"
-      camel_case_connected = outlet + "OutletConnected"
+      snake_case_connected = ruby_name + "_outlet_connected"
+      camel_case_connected = js_name + "OutletConnected"
       %x{
         #{self.stimulus_controller}.prototype[#{camel_case_connected}] = function() {
           if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_connected})) {
@@ -115,8 +116,8 @@ class StimulusController < `Controller`
         }
       }
 
-      snake_case_disconnected = outlet + "_outlet_disconnected"
-      camel_case_disconnected = outlet + "OutletDisconnected"
+      snake_case_disconnected = ruby_name + "_outlet_disconnected"
+      camel_case_disconnected = js_name + "OutletDisconnected"
       %x{
         #{self.stimulus_controller}.prototype[#{camel_case_disconnected}] = function() {
           if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_disconnected})) {
