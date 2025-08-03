@@ -16,3 +16,13 @@
 
 - Add missing ignore for app/assets/builds/opal.js.map
 - Replace opal-browser with opal_proxy, check it out here.
+
+## [0.1.4] - 2025-08-03
+
+Fix Targets
+Fix Outlets
+Fix Values
+Fix `element`
+Fix Classes
+Updare readme
+Add `document` and `window` private methods
