@@ -174,23 +174,22 @@ class StimulusController < `Controller`
   end
 
   def self.classes=(class_names = [])
-    `#{self.stimulus_controller}.classes = #{class_names.to_n}`
+    `#{self.stimulus_controller}.classes = class_names`
 
     class_names.each do |class_name|
-      define_method("add_#{class_name}_class") do
-        `this.#{class_name}Classes.add()`
+      js_name = class_name.to_s
+      ruby_name = self.to_ruby_name(class_name)
+
+      define_method("#{ruby_name}_class") do
+        `return this[#{js_name + "Class"}]`
       end
 
-      define_method("remove_#{class_name}_class") do
-        `this.#{class_name}Classes.remove()`
+      define_method("#{ruby_name}_classes") do
+        `return this[#{js_name + "Classes"}]`
       end
 
-      define_method("has_#{class_name}_class?") do
-        `return this.#{class_name}Classes.has()`
-      end
-
-      define_method("toggle_#{class_name}_class") do
-        `this.#{class_name}Classes.toggle()`
+      define_method("has_#{ruby_name}_class") do
+        `return this[#{"has" + js_name.capitalize + "Class"}]`
       end
     end
   end
