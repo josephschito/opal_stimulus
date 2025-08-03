@@ -194,30 +194,12 @@ class StimulusController < `Controller`
     end
   end
 
-  def add_class(class_name, element = nil)
-    if element
-      `this.addClass(#{class_name}, #{element})`
-    else
-      `this.addClass(#{class_name})`
-    end
   def element
     JS::Proxy.new(`this.element`)
   end
 
-  def remove_class(class_name, element = nil)
-    if element
-      `this.removeClass(#{class_name}, #{element})`
-    else
-      `this.removeClass(#{class_name})`
-    end
-  end
+  private
 
-  def has_class?(class_name, element = nil)
-    if element
-      `return this.hasClass(#{class_name}, #{element})`
-    else
-      `return this.hasClass(#{class_name})`
-    end
   def self.to_ruby_name(name)
     name
       .to_s
@@ -225,17 +207,11 @@ class StimulusController < `Controller`
       .sub(/^_/, '')
   end
 
-  def toggle_class(class_name, force = nil, element = nil)
-    if element && force != nil
-      `this.toggleClass(#{class_name}, #{force}, #{element})`
-    elsif element
-      `this.toggleClass(#{class_name}, #{element})`
-    elsif force != nil
-      `this.toggleClass(#{class_name}, #{force})`
-    else
-      `this.toggleClass(#{class_name})`
-    end
+  def window
+    @window ||= JS::Proxy.new($$.window)
   end
 
+  def document
+    @document ||= JS::Proxy.new($$.document)
   end
 end
