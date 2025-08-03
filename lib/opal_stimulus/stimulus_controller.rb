@@ -30,7 +30,13 @@ class StimulusController < `Controller`
     %x{
       #{self.stimulus_controller}.prototype[name] = function (...args) {
         try {
-          return this['$' + name].apply(this, args);
+          var wrappedArgs = args.map(function(arg) {
+            if (arg && typeof arg === "object" && !arg.$$class) {
+              return Opal.JS.Proxy.$new(arg);
+            }
+            return arg;
+          });
+          return this['$' + name].apply(this, wrappedArgs);
         } catch (e) {
           console.error("Uncaught", e);
         }
@@ -42,22 +48,25 @@ class StimulusController < `Controller`
     `#{self.stimulus_controller}.targets = targets`
 
     targets.each do |target|
-      define_method(target + "_target") do
-        JS::Proxy.new(`this[#{target + "Target"}]`)
+      js_name = target.to_s
+      ruby_name = self.to_ruby_name(target)
+
+      define_method(ruby_name + "_target") do
+        JS::Proxy.new(`this[#{js_name + "Target"}]`)
       end
 
-      define_method(target + "_targets") do
-        `this[#{target + "Targets"}]`.map do |el|
+      define_method(ruby_name + "_targets") do
+        `this[#{js_name + "Targets"}]`.map do |el|
           JS::Proxy.new(el)
         end
       end
 
-      define_method("has_" + target + "_target") do
-        `return this[#{"has" + target.capitalize + "Target"}]`
+      define_method("has_" + ruby_name + "_target") do
+        `this[#{"has" + js_name.capitalize + "Target"}]`
       end
 
-      snake_case_connected = target + "_target_connected"
-      camel_case_connected = target + "TargetConnected"
+      snake_case_connected = ruby_name + "_target_connected"
+      camel_case_connected = js_name + "TargetConnected"
       %x{
         #{self.stimulus_controller}.prototype[#{camel_case_connected}] = function() {
           if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_connected})) {
@@ -66,8 +75,8 @@ class StimulusController < `Controller`
         }
       }
 
-      snake_case_disconnected = target + "_target_disconnected"
-      camel_case_disconnected = target + "TargetDisconnected"
+      snake_case_disconnected = ruby_name + "_target_disconnected"
+      camel_case_disconnected = js_name + "TargetDisconnected"
       %x{
         #{self.stimulus_controller}.prototype[#{camel_case_disconnected}] = function() {
           if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_disconnected})) {
@@ -82,22 +91,23 @@ class StimulusController < `Controller`
     `#{self.stimulus_controller}.outlets = outlets`
 
     outlets.each do |outlet|
-      define_method(outlet + "_outlet") do
-        JS::Proxy.new(`this[#{outlet + "Outlet"}]`)
+      js_name = outlet.to_s
+      ruby_name = self.to_ruby_name(outlet)
+
+      define_method(ruby_name + "_outlet") do
+        `return this[#{js_name + "Outlet"}]`
       end
 
-      define_method(outlet + "_outlets") do
-        `this[#{outlet + "Outlets"}]`.map do |outlet|
-          JS::Proxy.new(outlet)
-        end
+      define_method(ruby_name + "_outlets") do
+        `this[#{js_name + "Outlets"}]`
       end
 
-      define_method("has_" + outlet + "_outlet") do
-        `return this[#{"has" + outlet.capitalize + "Outlet"}]`
+      define_method("has_" + ruby_name + "_outlet") do
+        `return this[#{"has" + js_name.capitalize + "Outlet"}]`
       end
 
-      snake_case_connected = outlet + "_outlet_connected"
-      camel_case_connected = outlet + "OutletConnected"
+      snake_case_connected = ruby_name + "_outlet_connected"
+      camel_case_connected = js_name + "OutletConnected"
       %x{
         #{self.stimulus_controller}.prototype[#{camel_case_connected}] = function() {
           if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_connected})) {
@@ -106,8 +116,8 @@ class StimulusController < `Controller`
         }
       }
 
-      snake_case_disconnected = outlet + "_outlet_disconnected"
-      camel_case_disconnected = outlet + "OutletDisconnected"
+      snake_case_disconnected = ruby_name + "_outlet_disconnected"
+      camel_case_disconnected = js_name + "OutletDisconnected"
       %x{
         #{self.stimulus_controller}.prototype[#{camel_case_disconnected}] = function() {
           if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_disconnected})) {
@@ -122,37 +132,29 @@ class StimulusController < `Controller`
     js_values = {}
 
     values_hash.each do |name, type|
+      name = self.to_ruby_name(name)
+
       js_type = case type
-      when String  then "String"
-      when Integer, Float, Numeric then "Number"
-      when TrueClass, FalseClass, Boolean then "Boolean"
-      when Array  then "Array"
-      when Hash, Object then "Object"
-      else "String" # Default to String for unknown types
+      when :string then `String`
+      when :number then `Number`
+      when :boolean then `Boolean`
+      when :array then `Array`
+      when :object then `Object`
+      else
+        raise ArgumentError,
+          "Unsupported value type: #{type}, please use :string, :number, :boolean, :array, or :object"
       end
 
       js_values[name] = js_type
 
-      # Define value getter method (snake_case)
-      define_method(name.to_s) do
-        # Convert JavaScript value to appropriate Ruby type
-        js_value = `this[#{name + "Value"}]`
-        case type
-        when String
-          js_value.to_s
-        when Integer
-          js_value.to_i
-        when Float
-          js_value.to_f
-        when TrueClass, FalseClass, Boolean
-          !!js_value
-        when Array
-          Native::Array.new(js_value)
-        when Hash, Object
-          Native::Object.new(js_value)
-        else
-          js_value
-        end
+      `#{self.stimulus_controller}.values = #{js_values.to_n}`
+
+      define_method(name + "_value") do
+        `return this[#{name + "Value"}]`
+      end
+
+      define_method(name + "_value=") do |value|
+        `this[#{name + "Value"}]= #{value.to_n}`
       end
 
       define_method("has_#{name}") do
@@ -169,69 +171,47 @@ class StimulusController < `Controller`
         }
       }
     end
-
-    `#{self.stimulus_controller}.values = #{js_values.to_n}`
   end
 
   def self.classes=(class_names = [])
-    `#{self.stimulus_controller}.classes = #{class_names.to_n}`
+    `#{self.stimulus_controller}.classes = class_names`
 
     class_names.each do |class_name|
-      define_method("add_#{class_name}_class") do
-        `this.#{class_name}Classes.add()`
+      js_name = class_name.to_s
+      ruby_name = self.to_ruby_name(class_name)
+
+      define_method("#{ruby_name}_class") do
+        `return this[#{js_name + "Class"}]`
       end
 
-      define_method("remove_#{class_name}_class") do
-        `this.#{class_name}Classes.remove()`
+      define_method("#{ruby_name}_classes") do
+        `return this[#{js_name + "Classes"}]`
       end
 
-      define_method("has_#{class_name}_class?") do
-        `return this.#{class_name}Classes.has()`
+      define_method("has_#{ruby_name}_class") do
+        `return this[#{"has" + js_name.capitalize + "Class"}]`
       end
-
-      define_method("toggle_#{class_name}_class") do
-        `this.#{class_name}Classes.toggle()`
-      end
-    end
-  end
-
-  def add_class(class_name, element = nil)
-    if element
-      `this.addClass(#{class_name}, #{element})`
-    else
-      `this.addClass(#{class_name})`
-    end
-  end
-
-  def remove_class(class_name, element = nil)
-    if element
-      `this.removeClass(#{class_name}, #{element})`
-    else
-      `this.removeClass(#{class_name})`
-    end
-  end
-
-  def has_class?(class_name, element = nil)
-    if element
-      `return this.hasClass(#{class_name}, #{element})`
-    else
-      `return this.hasClass(#{class_name})`
-    end
-  end
-
-  def toggle_class(class_name, force = nil, element = nil)
-    if element && force != nil
-      `this.toggleClass(#{class_name}, #{force}, #{element})`
-    elsif element
-      `this.toggleClass(#{class_name}, #{element})`
-    elsif force != nil
-      `this.toggleClass(#{class_name}, #{force})`
-    else
-      `this.toggleClass(#{class_name})`
     end
   end
 
   def element
-    `this.element`
+    JS::Proxy.new(`this.element`)
+  end
+
+  private
+
+  def self.to_ruby_name(name)
+    name
+      .to_s
+      .gsub(/([A-Z]+)/) { "_#{$1.downcase}" }
+      .sub(/^_/, '')
+  end
+
+  def window
+    @window ||= JS::Proxy.new($$.window)
+  end
+
+  def document
+    @document ||= JS::Proxy.new($$.document)
   end
 end
