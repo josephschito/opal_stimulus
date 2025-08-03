@@ -61,8 +61,122 @@ end
 
 https://github.com/user-attachments/assets/c51ed28c-13d2-4e06-b882-1cc997e9627b
 
+**Notes:**
+
+- In general any reference method is snake cased, so `container` target will produce `container_target` and not ~`containerTarget`~
+- Any `target`, `element`, `document`, `window` and `event` is a `JS::Proxy` instance, that provides a dynamic interface to JavaScript objects in Opal
+- The frontend definition part will remain the same
 
 
+## Some examples based on [Stimulus Reference](https://stimulus.hotwired.dev/reference/controllers)
+
+### Lifecycle Callbacks
+```ruby
+class AlertController < StimulusController
+  def initialize; end
+  def connect; end
+  def disconnect; end
+end
+```
+
+### Actions
+```ruby
+class WindowResizeController < StimulusController
+  def resized(event)
+    if !@resized && event.target.inner_width >= 1080
+      puts "Full HD? Nice!"
+      @resized = true
+    end
+  end
+end
+```
+
+### Targets
+```ruby
+class ContainerController < StimulusController
+  self.targets = ["container"]
+
+  def container_target_connected
+    container_target.inner_html = <<~HTML
+      <h1>Test connected!</h1>
+    HTML
+  end
+
+  def container_target_disconnected
+    puts "Container disconnected!"
+  end
+end
+```
+
+### Outlets
+```ruby
+class ChatController < StimulusController
+  self.outlets = [ "user-status" ]
+
+  def connect
+    user_status_outlets.each do |status|
+      puts status
+    end
+  end
+end
+```
+
+### Values
+```ruby
+class LoaderController < StimulusController
+  self.values = { url: :string }
+
+  def connect
+    window.fetch(url_value).then do |response|
+      response.json().then do |data|
+        load_data(data)
+      end
+    end
+  end
+
+  private
+
+  def load_data(data)
+    # ...
+  end
+end
+```
+
+### CSS Classes
+```ruby
+class SearchController < StimulusController
+  self.classes = [ "loading" ]
+
+  def loadResults
+    element.class_list.add loading_class
+  end
+end
+```
+
+## Extra tools
+### Window
+```ruby
+class WindowController < StimulusController
+  def connect
+    window.alert "Hello world!"
+    window.set_timeout(-> {
+      puts "1. Timeout test OK (1s delay)"
+    }, 1000)
+  end
+end
+```
+
+### Document
+```ruby
+class DocumentController < StimulusController
+  def connect
+    headers = document.querySelectorAll("h1")
+    headers.each do |h1|
+      h1.text_content = "Opal is great!"
+    end
+  end
+end
+```
 
 ## Contributing
 
