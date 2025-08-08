@@ -5,8 +5,6 @@ require "native"
 require "js/proxy"
 
 class StimulusController < `Controller`
-  include Native::Wrapper
-
   DEFAULT_METHODS = %i[initialize connect disconnect dispatch]
   DEFAULT_GETTERS = %i[element]
 
