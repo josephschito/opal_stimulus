@@ -9,4 +9,16 @@ require "rubocop/rake_task"
 
 RuboCop::RakeTask.new
 
-task default: %i[test rubocop]
+require 'opal/rspec/rake_task'
+require "opal"
+
+Opal.use_gem("opal_proxy")
+Opal.append_path File.expand_path('../lib', __FILE__)
+Opal.append_path File.expand_path('../shared_fixtures', __FILE__)
+
+Opal::RSpec::RakeTask.new("rspec-opal") do |server, task|
+  server.debug = true
+  task.runner = :chrome
+end
+
+task default: %i[rspec-opal]
