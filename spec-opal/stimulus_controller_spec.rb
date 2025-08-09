@@ -72,6 +72,19 @@ RSpec.describe StimulusController do
     end
   end
 
+  describe ".register_all!" do
+    class MyController < described_class; end
+    StimulusController.register_all!
+
+    it "should register controller" do
+      expect(`application.router.modules[0].definition.identifier`).to eq("my")
+    end
+
+    it "sould respond to `dummy` method" do
+      expect(MyController.new).to respond_to(:dummy)
+    end
+  end
+
   describe ".targets=" do
     class MyController < described_class
       self.targets = ["container"]

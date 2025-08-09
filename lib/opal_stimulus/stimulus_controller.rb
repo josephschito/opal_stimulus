@@ -42,6 +42,15 @@ class StimulusController < `Controller`
     }
   end
 
+  def self.register_all!
+    subclasses.each do |controller|
+      controller.define_method(:dummy) {}
+
+      return if `application.controllers`.include?(`#{controller.stimulus_name}`)
+      `application.register(#{controller.stimulus_name}, #{controller.stimulus_controller})`
+    end
+  end
+
   def self.targets=(targets = [])
     `#{self.stimulus_controller}.targets = targets`
 
