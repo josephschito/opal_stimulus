@@ -1,4 +1,9 @@
-# Opal Stimulus for Rails
+<h1 align="center">
+  <img src="https://github.com/user-attachments/assets/cdd684b7-8baa-4358-85fd-eb3487252972"
+  align="center" title="Opal Stimulus logo by Joseph Schito" width="105" height="105" />
+  <br/>
+  Opal Stimulus for Rails  <br/>
+</h1>
 
 **Opal Stimulus** is a Stimulus wrapper made with Opal (a source-to-source Ruby to JavaScript compiler) that allows you to write Stimulus controllers in Ruby instead of JavaScript (It works only with Rails).
 
