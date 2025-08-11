@@ -42,6 +42,13 @@ class StimulusController < `Controller`
     }
   end
 
+  def self.to_ruby_name(name)
+    name
+      .to_s
+      .gsub(/([A-Z]+)/) { "_#{$1.downcase}" }
+      .sub(/^_/, '')
+  end
+
   def self.register_all!
     subclasses.each do |controller|
       controller.define_method(:dummy) {}
@@ -207,13 +214,6 @@ class StimulusController < `Controller`
 
   def element
     JS::Proxy.new(`this.element`)
-  end
-
-  def self.to_ruby_name(name)
-    name
-      .to_s
-      .gsub(/([A-Z]+)/) { "_#{$1.downcase}" }
-      .sub(/^_/, '')
   end
 
   def window
