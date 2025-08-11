@@ -17,8 +17,7 @@ Opal.append_path File.expand_path('../lib', __FILE__)
 Opal.append_path File.expand_path('../shared_fixtures', __FILE__)
 
 Opal::RSpec::RakeTask.new("rspec-opal") do |server, task|
-  server.debug = true
   task.runner = :chrome
 end
 
-task default: %i[rspec-opal]
+task default: %i[test rspec-opal]
