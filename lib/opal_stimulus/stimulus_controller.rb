@@ -209,8 +209,6 @@ class StimulusController < `Controller`
     JS::Proxy.new(`this.element`)
   end
 
-  private
-
   def self.to_ruby_name(name)
     name
       .to_s
