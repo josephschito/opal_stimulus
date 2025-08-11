@@ -157,11 +157,11 @@ class StimulusController < `Controller`
       `#{self.stimulus_controller}.values = #{js_values.to_n}`
 
       define_method(name + "_value") do
-        `return this[#{name + "Value"}]`
+        Native(`this[#{name + "Value"}]`)
       end
 
       define_method(name + "_value=") do |value|
-        `this[#{name + "Value"}]= #{value.to_n}`
+        Native(`this[#{name + "Value"}]= #{value}`)
       end
 
       define_method("has_#{name}") do
@@ -172,6 +172,10 @@ class StimulusController < `Controller`
       camel_case_changed = "#{name}ValueChanged"
       %x{
         #{self.stimulus_controller}.prototype[#{camel_case_changed}] = function(value, previousValue) {
+          if (#{type == :object}) {
+            value = JSON.stringify(value)
+            previousValue = JSON.stringify(previousValue)
+          }
           if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_changed})) {
             return this['$' + #{snake_case_changed}](value, previousValue);
           }
