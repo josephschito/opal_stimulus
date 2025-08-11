@@ -2,6 +2,8 @@
 
 **Opal Stimulus** is a Stimulus wrapper made with Opal (a source-to-source Ruby to JavaScript compiler) that allows you to write Stimulus controllers in Ruby instead of JavaScript (It works only with Rails).
 
+[![Ruby](https://github.com/josephschito/opal_stimulus/actions/workflows/main.yml/badge.svg)](https://github.com/josephschito/opal_stimulus/actions/workflows/main.yml)
+
 ## Installation
 
 Add this line to your Gemfile:
@@ -177,6 +179,9 @@ class DocumentController < StimulusController
   end
 end
 ```
+
+## Run tests
+`bundle exec rake`
 
 ## Contributing
 
