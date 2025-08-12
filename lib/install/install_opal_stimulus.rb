@@ -22,7 +22,7 @@ if File.exist? APPLICATION_LAYOUT_PATH
 
   say "Creating Opal Stimulus files", :green
   if Rails.root.join("Procfile.dev").exist?
-    append_to_file "Procfile.dev", "opal: bin/opal --watch\n"
+    append_to_file "Procfile.dev", "opal: opal_stimulus:watch\n"
   else
     say "Add default Procfile.dev"
     copy_file "#{__dir__}/Procfile.dev", "Procfile.dev"
@@ -46,11 +46,8 @@ window.Controller = Controller;
   empty_directory "#{APPLICATION_OPAL_STIMULUS_PATH}/controllers"
   empty_directory "#{APPLICATION_OPAL_STIMULUS_PATH}/app/assets/builds"
   create_file "app/assets/builds/.keep"
-  copy_file "#{__dir__}/opal", "#{APPLICATION_OPAL_STIMULUS_BIN_PATH}/opal"
-  FileUtils.chmod("+x", "#{APPLICATION_OPAL_STIMULUS_BIN_PATH}/opal")
   copy_file "#{__dir__}/dev", "#{APPLICATION_OPAL_STIMULUS_BIN_PATH}/dev"
   FileUtils.chmod("+x", "#{APPLICATION_OPAL_STIMULUS_BIN_PATH}/dev")
   copy_file "#{__dir__}/application.rb", "#{APPLICATION_OPAL_STIMULUS_PATH}/application.rb"
-  copy_file "#{__dir__}/controllers_requires.rb", "#{APPLICATION_OPAL_STIMULUS_PATH}/controllers_requires.rb"
   copy_file "#{__dir__}/controllers/my_opal_controller.rb", "#{APPLICATION_OPAL_STIMULUS_PATH}/controllers/my_opal_controller.rb"
 end
