@@ -33,8 +33,6 @@ Here's a Hello World example with OpalStimulus. Compare with the [original JavaS
 
 ```ruby
 # app/opal/controllers/hello_controller.rb
-# new controllers will be automatically added to app/opal/controllers_requires.rb
-#   (ordered files load is not supported yet)
 class HelloController < StimulusController
   self.targets = ["name", "output"]
 
