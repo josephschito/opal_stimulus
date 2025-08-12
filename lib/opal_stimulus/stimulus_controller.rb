@@ -5,8 +5,6 @@ require "native"
 require "js/proxy"
 
 class StimulusController < `Controller`
-  include Native::Wrapper
-
   DEFAULT_METHODS = %i[initialize connect disconnect dispatch]
   DEFAULT_GETTERS = %i[element]
 
@@ -42,6 +40,22 @@ class StimulusController < `Controller`
         }
       }
     }
+  end
+
+  def self.to_ruby_name(name)
+    name
+      .to_s
+      .gsub(/([A-Z]+)/) { "_#{$1.downcase}" }
+      .sub(/^_/, '')
+  end
+
+  def self.register_all!
+    subclasses.each do |controller|
+      controller.define_method(:dummy) {}
+
+      return if `application.controllers`.include?(`#{controller.stimulus_name}`)
+      `application.register(#{controller.stimulus_name}, #{controller.stimulus_controller})`
+    end
   end
 
   def self.targets=(targets = [])
@@ -150,11 +164,11 @@ class StimulusController < `Controller`
       `#{self.stimulus_controller}.values = #{js_values.to_n}`
 
       define_method(name + "_value") do
-        `return this[#{name + "Value"}]`
+        Native(`this[#{name + "Value"}]`)
       end
 
       define_method(name + "_value=") do |value|
-        `this[#{name + "Value"}]= #{value.to_n}`
+        Native(`this[#{name + "Value"}]= #{value}`)
       end
 
       define_method("has_#{name}") do
@@ -165,6 +179,10 @@ class StimulusController < `Controller`
       camel_case_changed = "#{name}ValueChanged"
       %x{
         #{self.stimulus_controller}.prototype[#{camel_case_changed}] = function(value, previousValue) {
+          if (#{type == :object}) {
+            value = JSON.stringify(value)
+            previousValue = JSON.stringify(previousValue)
+          }
           if (this['$respond_to?'] && this['$respond_to?'](#{snake_case_changed})) {
             return this['$' + #{snake_case_changed}](value, previousValue);
           }
@@ -196,15 +214,6 @@ class StimulusController < `Controller`
 
   def element
     JS::Proxy.new(`this.element`)
-  end
-
-  private
-
-  def self.to_ruby_name(name)
-    name
-      .to_s
-      .gsub(/([A-Z]+)/) { "_#{$1.downcase}" }
-      .sub(/^_/, '')
   end
 
   def window
