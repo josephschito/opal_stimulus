@@ -1,0 +1,14 @@
+Description:
+============
+    Generates a new Opal Stimulus controller at the passed path.
+
+Examples:
+=========
+    bin/rails generate opal_stimulus chat
+
+    creates: app/opal/controllers/chat_controller.rb
+
+
+    bin/rails generate stimulus nested/chat
+
+    creates: app/opal/controllers/nested/chat_controller.rb

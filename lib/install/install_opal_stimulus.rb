@@ -13,13 +13,6 @@ if File.exist? APPLICATION_LAYOUT_PATH
     ERB
   end
 
-  insert_into_file APPLICATION_LAYOUT_PATH, after: "<body>\n" do
-    say "Adding `my-opal` to the application layout", :green
-    <<-ERB
-    <span data-controller="my-opal"></span>
-    ERB
-  end
-
   say "Creating Opal Stimulus files", :green
   if Rails.root.join("Procfile.dev").exist?
     append_to_file "Procfile.dev", "opal: bin/rails opal_stimulus:watch\n"
@@ -44,10 +37,9 @@ window.Controller = Controller;
   empty_directory APPLICATION_OPAL_STIMULUS_BIN_PATH
   empty_directory APPLICATION_OPAL_STIMULUS_PATH
   empty_directory "#{APPLICATION_OPAL_STIMULUS_PATH}/controllers"
-  empty_directory "#{APPLICATION_OPAL_STIMULUS_PATH}/app/assets/builds"
+  create_file "#{APPLICATION_OPAL_STIMULUS_PATH}/controllers/.keep"
   create_file "app/assets/builds/.keep"
   copy_file "#{__dir__}/dev", "#{APPLICATION_OPAL_STIMULUS_BIN_PATH}/dev"
   FileUtils.chmod("+x", "#{APPLICATION_OPAL_STIMULUS_BIN_PATH}/dev")
   copy_file "#{__dir__}/application.rb", "#{APPLICATION_OPAL_STIMULUS_PATH}/application.rb"
-  copy_file "#{__dir__}/controllers/my_opal_controller.rb", "#{APPLICATION_OPAL_STIMULUS_PATH}/controllers/my_opal_controller.rb"
 end

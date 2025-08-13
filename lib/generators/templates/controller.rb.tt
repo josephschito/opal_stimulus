@@ -1,0 +1,5 @@
+# Connects to data-controller="<%= file_name.dasherize %>"
+class <%= class_name %>Controller < StimulusController
+  def connect
+  end
+end
