@@ -22,7 +22,7 @@ if File.exist? APPLICATION_LAYOUT_PATH
 
   say "Creating Opal Stimulus files", :green
   if Rails.root.join("Procfile.dev").exist?
-    append_to_file "Procfile.dev", "opal: opal_stimulus:watch\n"
+    append_to_file "Procfile.dev", "opal: bin/rails opal_stimulus:watch\n"
   else
     say "Add default Procfile.dev"
     copy_file "#{__dir__}/Procfile.dev", "Procfile.dev"

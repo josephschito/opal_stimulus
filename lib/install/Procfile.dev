@@ -1,2 +1,2 @@
 web: bin/rails server
-opal: bin/opal --watch
+opal: bin/rails opal_stimulus:watch
