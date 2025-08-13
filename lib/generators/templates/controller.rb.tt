@@ -1,5 +1,14 @@
 # Connects to data-controller="<%= file_name.dasherize %>"
-class <%= class_name %>Controller < StimulusController
-  def connect
-  end
-end
+<% constants = class_name.split("::") -%>
+<% modules = constants[0..-2] -%>
+<% indentation = "  " * (modules.length) -%>
+<% modules.each do |constant| -%>
+module <%= constant %>
+<% end -%>
+<%= indentation %>class <%= constants.last %>Controller < StimulusController
+<%= indentation %>  def connect
+<%= indentation %>  end
+<%= indentation %>end
+<% modules.each.with_index do |constant, i| -%>
+<%= "  " * i %>end
+<% end -%>
