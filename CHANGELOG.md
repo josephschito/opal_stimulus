@@ -19,10 +19,9 @@
 
 ## [0.1.4] - 2025-08-03
 
-Fix Targets
-Fix Outlets
-Fix Values
-Fix `element`
-Fix Classes
-Updare readme
-Add `document` and `window` private methods
+- Fix Targets
+- Fix Outlets
+- Fix Values
+- Fix `element`
+- Fix Classes
+- Add `document` and `window` private methods
