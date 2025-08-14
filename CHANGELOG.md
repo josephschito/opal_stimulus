@@ -25,3 +25,10 @@
 - Fix `element`
 - Fix Classes
 - Add `document` and `window` private methods
+
+## [0.1.5] - 2025-08-14
+
+- Add `StimulusController` unit and system tests
+- Reduce installed new lines for Rails
+- Skip importmap in production
+- Add `bin/rails generate opal_stimulus <CONTROLLER_NAME>`, usage: `bin/rails g opal_stimulus -h`
