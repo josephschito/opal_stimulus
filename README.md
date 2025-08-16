@@ -64,11 +64,6 @@ end
 </div>
 ```
 
-**Example**
-
-![opal_stimulus_demo](https://github.com/user-attachments/assets/7bfdd60e-731e-4b0d-b8a6-0b4928c86e04)
-
-
 **Notes:**
 
 - In general any reference method is snake cased, so `container` target will produce `container_target` and not ~`containerTarget`~
