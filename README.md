@@ -64,9 +64,10 @@ end
 </div>
 ```
 
-**Result**
+**Example**
 
-https://github.com/user-attachments/assets/c51ed28c-13d2-4e06-b882-1cc997e9627b
+![opal_stimulus_demo](https://github.com/user-attachments/assets/7bfdd60e-731e-4b0d-b8a6-0b4928c86e04)
+
 
 **Notes:**
 
