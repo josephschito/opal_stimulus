@@ -32,3 +32,9 @@
 - Reduce installed new lines for Rails
 - Skip importmap in production
 - Add `bin/rails generate opal_stimulus <CONTROLLER_NAME>`, usage: `bin/rails g opal_stimulus -h`
+
+## [0.1.6] - 2025-08-17
+
+- Simplify installation importing `application` and `Controller` with ESM
+  Now `app/javascript/controllers/application.js` will be not modified,
+  and only compiled code will be imported inside application layout.
