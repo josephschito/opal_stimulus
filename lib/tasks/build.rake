@@ -14,10 +14,15 @@ namespace :opal_stimulus do
   def compile
     puts "🔨 Compiling Opal..."
 
+    Opal::Config.esm = true
     builder = Opal::Builder.new
     result = builder.build("application")
     output_path = Rails.root.join("app/assets/builds/opal.js")
-    code = result.to_s
+    code = [
+      "import { application } from 'controllers/application';",
+      "import { Controller } from '@hotwired/stimulus';",
+      result.to_s
+    ].join("\n")
 
     if Rails.env.development?
       code += "//# sourceMappingURL=/assets/opal.js.map"

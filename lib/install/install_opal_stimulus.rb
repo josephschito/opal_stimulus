@@ -7,7 +7,6 @@ if File.exist? APPLICATION_LAYOUT_PATH
   insert_into_file APPLICATION_LAYOUT_PATH, after: "<%= javascript_importmap_tags %>\n" do
     <<-ERB
     <script type="module">
-      import "application"
       import "<%= javascript_path("opal") %>"
     </script>
     ERB
@@ -22,14 +21,6 @@ if File.exist? APPLICATION_LAYOUT_PATH
 
     say "Ensure foreman is installed"
     run "gem install foreman"
-  end
-  insert_into_file Rails.root.join("app/javascript/controllers/application.js") do
-    <<-JS
-import { Controller } from "@hotwired/stimulus";
-
-window.application = application;
-window.Controller = Controller;
-    JS
   end
   append_to_file ".gitignore", "/.opal-cache\n"
   append_to_file ".gitignore", "app/assets/builds/opal.js\n"
