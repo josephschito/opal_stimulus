@@ -28,7 +28,7 @@ bin/dev
 Create a new controller:
 
 ```bash
-bin/rails opal_stimulus hello
+bin/rails generate opal_stimulus hello
 ```
 This command will create `app/opal/controllers/hello_controller.rb`
 
