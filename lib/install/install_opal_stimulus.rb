@@ -22,6 +22,11 @@ if File.exist? APPLICATION_LAYOUT_PATH
     say "Ensure foreman is installed"
     run "gem install foreman"
   end
+
+  manifest = Rails.root.join("app/assets/config/manifest.js")
+  if manifest.exist?
+    append_to_file manifest, "//= link opal.js"
+  end
   append_to_file ".gitignore", "/.opal-cache\n"
   append_to_file ".gitignore", "app/assets/builds/opal.js\n"
   append_to_file ".gitignore", "app/assets/builds/opal.js.map\n"
