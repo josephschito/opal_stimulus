@@ -73,6 +73,10 @@ class OpalStimulusInstallTest < Minitest::Test
     assert File.exist?(File.join(@app_path, "app/opal/application.rb"))
     assert File.exist?(File.join(@app_path, "app/views/layouts/application.html.erb"))
     assert File.exist?(File.join(@app_path, "bin/dev"))
+    manifest_path = File.join(@app_path, "app/assets/config/manifest.js")
+    if File.exist?(manifest_path)
+      assert File.read(manifest_path).include?("//= link opal.js")
+    end
     gitignore = File.join(@app_path, ".gitignore")
     assert File.exist?(gitignore)
     content = File.read(gitignore)
