@@ -77,5 +77,8 @@ class OpalStimulusInstallTest < Minitest::Test
     assert content.include?("/.opal-cache")
     assert content.include?("app/assets/builds/opal.js")
     assert content.include?("app/assets/builds/opal.js.map")
+
+    run_command("bin/rails assets:precompile", chdir: @app_path)
+    assert Dir.glob(File.join(@app_path, "public/assets/opal-*.js")).any?
   end
 end
