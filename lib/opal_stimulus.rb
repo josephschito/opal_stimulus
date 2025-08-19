@@ -7,6 +7,7 @@ if RUBY_ENGINE == 'opal'
 else
   require "opal"
   require_relative "opal_stimulus/version"
+  require "opal_stimulus/railtie" if defined?(Rails)
 
   Opal.append_path File.expand_path('lib', __dir__)
 end
