@@ -56,3 +56,6 @@ namespace :opal_stimulus do
     sleep
   end
 end
+
+Rake::Task.define_task("assets:precompile") unless Rake::Task.task_defined?("assets:precompile")
+Rake::Task["assets:precompile"].enhance(["opal_stimulus:build"])
