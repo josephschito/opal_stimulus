@@ -38,3 +38,8 @@
 - Simplify installation importing `application` and `Controller` with ESM
   Now `app/javascript/controllers/application.js` will be not modified,
   and only compiled code will be imported inside application layout.
+
+## [0.1.7] - 2025-08-20
+
+- Add installation on Rails tests
+- Make it production ready enhancing `assets:precompile` with `opal_stimulus:build`
