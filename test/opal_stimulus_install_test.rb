@@ -36,18 +36,12 @@ class OpalStimulusInstallTest < Minitest::Test
 
   def test_on_rails(version)
     run_command("gem install rails -v #{version}")
-    run_command("rails _#{version}_ new dummy_app", chdir: @tmpdir)
+    run_command("rails _#{version}_ new dummy_app --skip-bootsnap", chdir: @tmpdir)
 
     gemfile_path = File.join(@app_path, "Gemfile")
     gemfile = File.read(gemfile_path)
-    gemfile << "\ngem 'bootsnap', require: false\n" unless gemfile.include?("bootsnap")
     gemfile << "\ngem 'opal_stimulus', path: '../../'\n"
     File.write(gemfile_path, gemfile)
-
-    boot_path = File.join(@app_path, "config/boot.rb")
-    boot = File.read(boot_path)
-    boot = boot.gsub(/require ["']bootsnap\/setup["']/, "# require 'bootsnap/setup'")
-    File.write(boot_path, boot)
 
     FileUtils.rm_f(File.join(@app_path, "config", "initializers", "assets.rb"))
 
