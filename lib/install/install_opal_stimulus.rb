@@ -33,8 +33,8 @@ if File.exist? APPLICATION_LAYOUT_PATH
   empty_directory APPLICATION_OPAL_STIMULUS_BIN_PATH
   empty_directory APPLICATION_OPAL_STIMULUS_PATH
   empty_directory "#{APPLICATION_OPAL_STIMULUS_PATH}/controllers"
-  create_file "#{APPLICATION_OPAL_STIMULUS_PATH}/controllers/.keep"
-  create_file "app/assets/builds/.keep"
+  keep_file "#{APPLICATION_OPAL_STIMULUS_PATH}/controllers"
+  keep_file "app/assets/builds"
   copy_file "#{__dir__}/dev", "#{APPLICATION_OPAL_STIMULUS_BIN_PATH}/dev"
   FileUtils.chmod("+x", "#{APPLICATION_OPAL_STIMULUS_BIN_PATH}/dev")
   copy_file "#{__dir__}/application.rb", "#{APPLICATION_OPAL_STIMULUS_PATH}/application.rb"
