@@ -15,6 +15,7 @@ group :test do
   gem "opal-rspec", "1.1.0.alpha3"
   gem "opal-sprockets", "~> 1.0.0"
   gem "base64", "0.3.0"
+  eval_gemfile "#{__dir__}/test/dummy/Gemfile"
 end
 
 gem "debug", "~> 1.11"

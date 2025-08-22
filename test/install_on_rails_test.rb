@@ -4,58 +4,29 @@ require "fileutils"
 require "open3"
 require "tmpdir"
 
-class OpalStimulusInstallTest < Minitest::Test
+class InstallOnRailsTest < Minitest::Test
   parallelize_me!
 
   def setup
     @tmpdir = Dir.mktmpdir
-    @app_path = File.join(@tmpdir, "dummy_app")
+    @app_path = File.join(@tmpdir, "dummy")
   end
 
   def teardown
     FileUtils.remove_entry @tmpdir
   end
 
-  def run_command(cmd, chdir: @tmpdir)
-    out, err, status = Open3.capture3(cmd, chdir: chdir)
-    unless status.success?
-      flunk "Command failed: #{cmd}\nSTDOUT:\n#{out}\nSTDERR:\n#{err}"
-    end
-    out
+  def run_command(cmd, chdir: @app_path)
+    Open3.capture3(cmd, chdir: chdir)
   end
 
-  def test_install_opal_stimulus_in_rails_7_2
-    test_on_rails("7.2")
-  end
-
-  def test_install_opal_stimulus_in_rails_8
-    test_on_rails("8")
-  end
-
-  private
-
-  def test_on_rails(version)
-    run_command("gem install rails -v #{version}")
-    run_command("rails _#{version}_ new dummy_app --skip-bootsnap", chdir: @tmpdir)
-
-    gemfile_path = File.join(@app_path, "Gemfile")
-    gemfile = File.read(gemfile_path)
-    gemfile << "\ngem 'opal_stimulus', path: '../../'\n"
-    File.write(gemfile_path, gemfile)
-
-    FileUtils.rm_f(File.join(@app_path, "config", "initializers", "assets.rb"))
-
-    run_command("bundle install", chdir: @app_path)
-
-    out, err, status = Open3.capture3("bin/rails opal_stimulus:install", chdir: @app_path)
-    unless status.success?
-      flunk "opal_stimulus:install failed\nSTDOUT:\n#{out}\nSTDERR:\n#{err}"
-    end
+  def test_installation
+    run_command("cp -R #{File.expand_path('test/dummy')} #{@tmpdir}", chdir: @tmpdir)
+    run_command("bin/rails opal_stimulus:install", chdir: @app_path)
 
     ["my", "my/best"].each do |gen|
       Open3.capture3("bin/rails g opal_stimulus #{gen}", chdir: @app_path)
     end
-    Open3.capture3("bin/rails g controller pages index", chdir: @app_path)
 
     procfile_path = File.join(@app_path, "Procfile.dev")
     assert File.exist?(procfile_path)

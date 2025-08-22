@@ -2,7 +2,7 @@ require "test_helper"
 require "selenium-webdriver"
 require "webdriver_helpers"
 
-class TestOpalStimulus < Minitest::Test
+class OpalStimulusTest < Minitest::Test
   include WebdriverHelpers
 
   parallelize_me!
