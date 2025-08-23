@@ -1,1 +1,3 @@
 shared_fixtures/* linguist-vendored
+test/dummy/* linguist-vendored=true
+test/dummy/** linguist-vendored=true
