@@ -43,3 +43,7 @@
 
 - Add installation on Rails tests
 - Make it production ready enhancing `assets:precompile` with `opal_stimulus:build`
+
+## [0.1.8] - 2025-08-27
+
+- Improve installation on Rails tests
