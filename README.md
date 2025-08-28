@@ -1,45 +1,42 @@
 # Opal Stimulus for Rails
 
-**Opal Stimulus** is a Stimulus wrapper made with Opal (a source-to-source Ruby to JavaScript compiler) that allows you to write Stimulus controllers in Ruby instead of JavaScript (It works only with Rails >= 7.2 and < 8.0.3).
+Write your [Stimulus](https://stimulus.hotwired.dev/) controllers in Ruby instead of JavaScript! 🎉
+
+**Opal Stimulus** uses the [Opal Ruby-to-JavaScript compiler](https://opalrb.com/) to bring the elegance of Ruby to your frontend controllers. If you love Ruby and prefer its syntax over JavaScript, this gem is for you.
+
+**Compatibility:** Rails 7.2+ to 8.0.2
 
 [![Ruby](https://github.com/josephschito/opal_stimulus/actions/workflows/main.yml/badge.svg)](https://github.com/josephschito/opal_stimulus/actions/workflows/main.yml)
 
-## Installation
+## Quick Start
 
-Add this line to your Gemfile:
-
-```ruby
-gem 'opal_stimulus'
-```
-
-Execute:
+Add to your Rails app and get started in seconds:
 
 ```bash
-bundle install
+bundle add opal_stimulus
 rails opal_stimulus:install
-```
-
-Start application:
-
-```bash
 bin/dev
 ```
 
-Create a new controller:
+Generate your first Ruby controller:
 
 ```bash
 bin/rails generate opal_stimulus hello
 ```
-This command will create `app/opal/controllers/hello_controller.rb`
 
-## Basic Example
+This creates `app/opal/controllers/hello_controller.rb`. If you have an existing JavaScript controller, you can remove it:
 
-Here's a Hello World example with OpalStimulus. Compare with the [original JavaScript example](https://stimulus.hotwired.dev/#:~:text=%2F%2F%20hello_controller.js%0Aimport%20%7B%20Controller%20%7D%20from%20%22stimulus%22%0A%0Aexport%20default%20class%20extends%20Controller%20%7B%0A%20%20static%20targets%20%3D%20%5B%20%22name%22%2C%20%22output%22%20%5D%0A%0A%20%20greet()%20%7B%0A%20%20%20%20this.outputTarget.textContent%20%3D%0A%20%20%20%20%20%20%60Hello%2C%20%24%7Bthis.nameTarget.value%7D!%60%0A%20%20%7D%0A%7D):
+```bash
+bin/rails destroy stimulus hello  # removes app/javascript/controllers/hello_controller.js
+```
 
-**Ruby Controller:**
+## Example: Hello World
+
+Here's the classic Stimulus example, but in Ruby! Compare with the [JavaScript version](https://stimulus.hotwired.dev/#:~:text=%2F%2F%20hello_controller.js%0Aimport%20%7B%20Controller%20%7D%20from%20%22stimulus%22%0A%0Aexport%20default%20class%20extends%20Controller%20%7B%0A%20%20static%20targets%20%3D%20%5B%20%22name%22%2C%20%22output%22%20%5D%0A%0A%20%20greet()%20%7B%0A%20%20%20%20this.outputTarget.textContent%20%3D%0A%20%20%20%20%20%20%60Hello%2C%20%24%7Bthis.nameTarget.value%7D!%60%0A%20%20%7D%0A%7D).
+
+**Ruby Controller (`app/opal/controllers/hello_controller.rb`):**
 
 ```ruby
-# app/opal/controllers/hello_controller.rb
 class HelloController < StimulusController
   self.targets = ["name", "output"]
 
@@ -49,31 +46,30 @@ class HelloController < StimulusController
 end
 ```
 
-**HTML:**
+**HTML (unchanged from regular Stimulus):**
 
 ```html
 <div data-controller="hello">
   <input data-hello-target="name" type="text">
-
-  <button data-action="click->hello#greet">
-    Greet
-  </button>
-
-  <span data-hello-target="output">
-  </span>
+  <button data-action="click->hello#greet">Greet</button>
+  <span data-hello-target="output"></span>
 </div>
 ```
 
-**Notes:**
+### Key Differences from JavaScript Stimulus
 
-- In general any reference method is snake cased, so `container` target will produce `container_target` and not ~`containerTarget`~
-- Any `target`, `element`, `document`, `window` and `event` is a `JS::Proxy` instance, that provides a dynamic interface to JavaScript objects in Opal
-- The frontend definition part will remain the same
+- **Snake case**: JavaScript's `containerTarget` becomes `container_target` in Ruby
+- **DOM objects**: All `target`, `element`, `document`, `window`, and `event` objects are `JS::Proxy` instances that provide Ruby-friendly access to JavaScript APIs
+- **HTML stays the same**: Your templates and data attributes work exactly like regular Stimulus
 
+## Reference Examples
 
-## Some examples based on [Stimulus Reference](https://stimulus.hotwired.dev/reference/controllers)
+Based on the [Stimulus Reference](https://stimulus.hotwired.dev/reference/controllers), here's how common patterns work in Ruby:
 
 ### Lifecycle Callbacks
+
+> 📚 [Stimulus Lifecycle Callbacks Reference](https://stimulus.hotwired.dev/reference/lifecycle-callbacks)
+
 ```ruby
 class AlertController < StimulusController
   def initialize; end
@@ -82,12 +78,15 @@ class AlertController < StimulusController
 end
 ```
 
-### Actions
+### Actions & Events
+
+> 📚 [Stimulus Actions Reference](https://stimulus.hotwired.dev/reference/actions)
+
 ```ruby
 class WindowResizeController < StimulusController
   def resized(event)
     if !@resized && event.target.inner_width >= 1080
-      puts "Full HD? Nice!"
+      puts "Full HD detected!"
       @resized = true
     end
   end
@@ -95,6 +94,9 @@ end
 ```
 
 ### Targets
+
+> 📚 [Stimulus Targets Reference](https://stimulus.hotwired.dev/reference/targets)
+
 ```ruby
 class ContainerController < StimulusController
   self.targets = ["container"]
@@ -112,6 +114,9 @@ end
 ```
 
 ### Outlets
+
+> 📚 [Stimulus Outlets Reference](https://stimulus.hotwired.dev/reference/outlets)
+
 ```ruby
 class ChatController < StimulusController
   self.outlets = [ "user-status" ]
@@ -125,6 +130,9 @@ end
 ```
 
 ### Values
+
+> 📚 [Stimulus Values Reference](https://stimulus.hotwired.dev/reference/values)
+
 ```ruby
 class LoaderController < StimulusController
   self.values = { url: :string }
@@ -146,43 +154,110 @@ end
 ```
 
 ### CSS Classes
+
+> 📚 [Stimulus CSS Classes Reference](https://stimulus.hotwired.dev/reference/css-classes)
+
 ```ruby
 class SearchController < StimulusController
-  self.classes = [ "loading" ]
+  self.classes = ["loading"]
 
-  def loadResults
-    element.class_list.add loading_class
+  def load_results
+    element.class_list.add(loading_class)
   end
 end
 ```
 
-## Extra tools
-### Window
+## Working with the DOM
+
+Opal Stimulus gives you Ruby-friendly access to all the browser APIs you know and love:
+
+### Window & Timers
+
 ```ruby
-class WindowController < StimulusController
+class TimerController < StimulusController
   def connect
-    window.alert "Hello world!"
-    window.set_timeout(-> {
-      puts "1. Timeout test OK (1s delay)"
-    }, 1000)
+    # Show alerts and confirmations
+    window.alert("Welcome!")
+    confirmed = window.confirm("Continue?")
+
+    # Set timeouts and intervals
+    window.set_timeout(-> { refresh_data }, 5000)
+    @interval = window.set_interval(-> { update_clock }, 1000)
+  end
+
+  def disconnect
+    window.clear_interval(@interval) if @interval
   end
 end
 ```
 
-### Document
+### Document Queries & Manipulation
+
 ```ruby
-class DocumentController < StimulusController
+class DomController < StimulusController
   def connect
-    headers = document.querySelectorAll("h1")
-    headers.each do |h1|
-      h1.text_content = "Opal is great!"
+    # Query elements
+    headers = document.query_selector_all("h1, h2, h3")
+    first_button = document.query_selector("button")
+
+    # Create and append elements
+    new_div = document.create_element("div")
+    new_div.text_content = "Created with Ruby!"
+    new_div.class_name = "ruby-generated"
+    element.append_child(new_div)
+  end
+
+  def highlight_sections
+    sections = document.query_selector_all(".content-section")
+    sections.each do |section|
+      section.style.background_color = "#f0f8ff"
+      section.style.border = "2px solid #007bff"
     end
   end
 end
 ```
 
-## Run tests
-`bundle exec rake`
+### Event Handling & Fetch API
+
+```ruby
+class ApiController < StimulusController
+  def fetch_data
+    window.fetch("/api/users")
+      .then { |response| response.json }
+      .then { |users| display_users(users) }
+      .catch { |error| show_error(error) }
+  end
+
+  def handle_key_press(event)
+    case event.key
+    when "Enter"
+      submit_form
+    when "Escape"
+      close_modal
+    end
+  end
+
+  private
+
+  def display_users(users)
+    list = element.query_selector(".users-list")
+    list.inner_html = users.map { |user| "<li>#{user[:name]}</li>" }.join
+  end
+
+  def show_error(error)
+    console.error("API Error:", error)
+    window.alert("Something went wrong!")
+  end
+end
+```
+
+## Development
+
+Run the test suite:
+
+```bash
+bundle exec rake
+```
 
 ## Contributing
 
