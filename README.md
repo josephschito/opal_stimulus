@@ -171,85 +171,29 @@ end
 
 Opal Stimulus gives you Ruby-friendly access to all the browser APIs you know and love:
 
-### Window & Timers
-
+### `window`
 ```ruby
-class TimerController < StimulusController
+class WindowController < StimulusController
   def connect
-    # Show alerts and confirmations
-    window.alert("Welcome!")
-    confirmed = window.confirm("Continue?")
-
-    # Set timeouts and intervals
-    window.set_timeout(-> { refresh_data }, 5000)
-    @interval = window.set_interval(-> { update_clock }, 1000)
-  end
-
-  def disconnect
-    window.clear_interval(@interval) if @interval
+    window.alert "Hello world!"
+    window.set_timeout(-> {
+      puts "1. Timeout test OK (1s delay)"
+    }, 1000)
   end
 end
 ```
 
-### Document Queries & Manipulation
-
+### `document`
 ```ruby
-class DomController < StimulusController
+class DocumentController < StimulusController
   def connect
-    # Query elements
-    headers = document.query_selector_all("h1, h2, h3")
-    first_button = document.query_selector("button")
-
-    # Create and append elements
-    new_div = document.create_element("div")
-    new_div.text_content = "Created with Ruby!"
-    new_div.class_name = "ruby-generated"
-    element.append_child(new_div)
-  end
-
-  def highlight_sections
-    sections = document.query_selector_all(".content-section")
-    sections.each do |section|
-      section.style.background_color = "#f0f8ff"
-      section.style.border = "2px solid #007bff"
+    document.querySelectorAll("h1").each do |h1|
+      h1.text_content = "Opal is great!"
     end
   end
 end
 ```
 
-### Event Handling & Fetch API
-
-```ruby
-class ApiController < StimulusController
-  def fetch_data
-    window.fetch("/api/users")
-      .then { |response| response.json }
-      .then { |users| display_users(users) }
-      .catch { |error| show_error(error) }
-  end
-
-  def handle_key_press(event)
-    case event.key
-    when "Enter"
-      submit_form
-    when "Escape"
-      close_modal
-    end
-  end
-
-  private
-
-  def display_users(users)
-    list = element.query_selector(".users-list")
-    list.inner_html = users.map { |user| "<li>#{user[:name]}</li>" }.join
-  end
-
-  def show_error(error)
-    console.error("API Error:", error)
-    window.alert("Something went wrong!")
-  end
-end
-```
 
 ## Development
 
