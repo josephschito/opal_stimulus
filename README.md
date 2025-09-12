@@ -8,6 +8,10 @@ Write your [Stimulus](https://stimulus.hotwired.dev/) controllers in Ruby instea
 
 [![Ruby](https://github.com/josephschito/opal_stimulus/actions/workflows/main.yml/badge.svg)](https://github.com/josephschito/opal_stimulus/actions/workflows/main.yml)
 
+## Click here to watch the walkthrough! 👇
+
+[<img width="640" height="360" alt="opal stimulus" src="https://github.com/user-attachments/assets/b8a73d08-9e23-41bc-9b28-89d5c7f3f6ab" />](https://www.youtube.com/watch?v=YyaVUUMq7po)
+
 ## Quick Start
 
 Add to your Rails app and get started in seconds:
