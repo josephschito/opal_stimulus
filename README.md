@@ -10,7 +10,7 @@ Write your [Stimulus](https://stimulus.hotwired.dev/) controllers in Ruby instea
 
 ## Click here to watch the walkthrough! 👇
 
-[<img width="640" height="360" alt="opal stimulus" src="https://github.com/user-attachments/assets/b8a73d08-9e23-41bc-9b28-89d5c7f3f6ab" />](https://www.youtube.com/watch?v=YyaVUUMq7po)
+[<img width="640" height="360" alt="opal stimulus" src="https://github.com/user-attachments/assets/3eba6d3f-c62a-4faa-b918-5181ec9e2efc" />](https://www.youtube.com/watch?v=YyaVUUMq7po)
 
 ## Quick Start
 
