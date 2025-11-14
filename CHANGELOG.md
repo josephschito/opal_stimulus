@@ -47,3 +47,8 @@
 ## [0.1.8] - 2025-08-27
 
 - Improve installation on Rails tests
+
+## [0.1.9] - 2025-11-14
+
+- Revise README for Opal Stimulus by @elia
+- Change README
