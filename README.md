@@ -4,7 +4,7 @@ Write your [Stimulus](https://stimulus.hotwired.dev/) controllers in Ruby instea
 
 **Opal Stimulus** uses the [Opal Ruby-to-JavaScript compiler](https://opalrb.com/) to bring the elegance of Ruby to your frontend controllers. If you love Ruby and prefer its syntax over JavaScript, this gem is for you.
 
-**Compatibility:** Rails 7.2+ to 8.0.2
+**Compatibility:** Rails >= 7.2
 
 [![Ruby](https://github.com/josephschito/opal_stimulus/actions/workflows/main.yml/badge.svg)](https://github.com/josephschito/opal_stimulus/actions/workflows/main.yml)
 
