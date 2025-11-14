@@ -52,3 +52,7 @@
 
 - Revise README for Opal Stimulus by @elia
 - Change README
+
+## [0.2.0] - 2025-11-14
+
+- Update rails and propshaft minimum dependencies
