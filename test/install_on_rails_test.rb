@@ -17,7 +17,15 @@ class InstallOnRailsTest < Minitest::Test
   end
 
   def run_command(cmd, chdir: @app_path)
-    Open3.capture3(cmd, chdir: chdir)
+    stdout, stderr, status = Open3.capture3(cmd, chdir: chdir)
+
+    assert status.success?, <<~MESSAGE
+      Command failed: #{cmd}
+      stdout:
+      #{stdout}
+      stderr:
+      #{stderr}
+    MESSAGE
   end
 
   def test_installation
@@ -25,7 +33,7 @@ class InstallOnRailsTest < Minitest::Test
     run_command("bin/rails opal_stimulus:install", chdir: @app_path)
 
     ["my", "my/best"].each do |gen|
-      Open3.capture3("bin/rails g opal_stimulus #{gen}", chdir: @app_path)
+      run_command("bin/rails g opal_stimulus #{gen}")
     end
 
     procfile_path = File.join(@app_path, "Procfile.dev")
