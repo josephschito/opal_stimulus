@@ -258,7 +258,9 @@ class OpalStimulusTest < Minitest::Test
     assert logs[8].message.include? "A secret american"
     assert logs[9].message.include? "Horacio Pagani"
     assert logs[10].message.include? "Argentina"
-    assert logs[11].message.include? 'author: from {\"name\":\"Horacio Pagani\",\"country\":\"Argentina\"} to {\"$$id\":82,\"native\":{\"name\":\"Horacio Pagani\",\"country\":\"Italy\"}}\n'
+    message = logs[11].message
+    assert message.include? 'author: from {\"name\":\"Horacio Pagani\",\"country\":\"Argentina\"} to {\"$$id\":'
+    assert message.include? ',\"native\":{\"name\":\"Horacio Pagani\",\"country\":\"Italy\"}}\n'
   end
 
   def test_classes

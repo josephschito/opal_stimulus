@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   # Gem dependencies
   spec.add_dependency "opal", "~> 1.8.2"
   spec.add_dependency "listen", "~> 3.9.0"
-  spec.add_dependency "opal_proxy", "~> 0.1.1"
+  spec.add_dependency "opal_proxy", "~> 0.2.0"
 
   # Rails dependencies
   spec.add_dependency "rails", ">= 7.2"
